@@ -9,6 +9,8 @@ return {
   },
   config = function()
     vim.keymap.set('n', '<C-n>', ':Neotree filesystem toggle left<CR>')
-    require('image')
+    require('neo-tree').setup({
+      hijack_netrw_behavior = 'open_default'
+    })
   end
 }
