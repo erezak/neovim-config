@@ -5,8 +5,8 @@ return {
 		local alpha = require("alpha")
 		local dashboard = require("alpha.themes.startify")
 		dashboard.section.header.val = {
-			[[  ____|   ]], 
-			[[  __|    __| _ \_  /  ]], 
+			[[  ____|   ]],
+			[[  __|    __| _ \_  /  ]],
 			[[  |     |    __/  /   ]],
 			[[ _____|_|  \___|___| ]],
 		}
