@@ -1,19 +1,30 @@
+function dump(o)
+  if type(o) == 'table' then
+    local s = '{ '
+    for k, v in pairs(o) do
+      if type(k) ~= 'number' then k = '"' .. k .. '"' end
+      s = s .. '[' .. k .. '] = ' .. dump(v) .. ','
+    end
+    return s .. '} '
+  else
+    return tostring(o)
+  end
+end
+
 return {
-	-- Install markdown preview, use npx if available.
-	"iamcco/markdown-preview.nvim",
-	cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-	ft = { "markdown" },
-	build = function(plugin)
-		if vim.fn.executable("npx") then
-			vim.cmd("!cd " .. plugin.dir .. " && cd app && npx --yes yarn install")
-		else
-			vim.cmd([[Lazy load markdown-preview.nvim]])
-			vim.fn["mkdp#util#install"]()
-		end
-	end,
-	init = function()
-		if vim.fn.executable("npx") then
-			vim.g.mkdp_filetypes = { "markdown" }
-		end
-	end,
+  -- Install markdown preview, use npx if available.
+  "OXY2DEV/markview.nvim",
+  ft = { "markdown" },
+  dependencies = {
+    "nvim-treesitter/nvim-treesitter",
+    "nvim-tree/nvim-web-devicons",
+  },
+  config = function()
+    local markview = require("markview");
+    local presets = require("markview.presets").headings;
+
+    markview.setup({
+      headings = presets.slanted,
+    });
+  end,
 }
