@@ -9,6 +9,7 @@ vim.cmd("set tabstop=2")
 vim.cmd("set shiftwidth=2")
 
 vim.g.mapleader = ' '
+vim.g.maplocalleader = ','
 
 -- Disable arrow keys in normal mode
 vim.keymap.set('n', '<Up>', '<Nop>', {noremap = true, silent = true})
