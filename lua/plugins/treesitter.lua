@@ -15,6 +15,7 @@ return {
         "html",
         "markdown",
         "markdown_inline",
+        "zig",
       },
       sync_install = false,
       highlight = { enable = true },
