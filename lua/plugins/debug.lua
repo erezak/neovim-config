@@ -1,127 +1,167 @@
 return {
-	{
-		"mfussenegger/nvim-dap",
-		dependencies = {
-			"rcarriga/nvim-dap-ui",
-			"nvim-neotest/nvim-nio",
-			"leoluz/nvim-dap-go",
-		},
-		config = function()
-			local dap = require("dap")
-			local dapui = require("dapui")
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      "rcarriga/nvim-dap-ui",
+      "nvim-neotest/nvim-nio",
+      "leoluz/nvim-dap-go",
+      "nvim-lua/plenary.nvim", -- Plenary provides TOML parsing and file handling
+    },
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+      local mason_registry = require("mason-registry")
+      local codelldb_root = mason_registry.get_package("codelldb"):get_install_path() .. "/extension/"
+      local codelldb_path = codelldb_root .. "adapter/codelldb"
+      local liblldb_path = codelldb_root .. "lldb/lib/liblldb.dylib"
 
-			dapui.setup()
-			require("dap-go").setup()
+      dap.adapters.lldb = {
+        type = "executable",
+        command = "/usr/bin/lldb",
+        name = "lldb",
+      }
 
-			dap.listeners.before.attach.dapui_config = function()
-				dapui.open()
-			end
-			dap.listeners.before.launch.dapui_config = function()
-				dapui.open()
-			end
-			dap.listeners.before.event_terminated.dapui_config = function()
-				dapui.close()
-			end
-			dap.listeners.before.event_exited.dapui_config = function()
-				dapui.close()
-			end
-			vim.keymap.set("n", "<Leader>dt", function()
-				dap.toggle_breakpoint()
-			end)
-			vim.keymap.set("n", "<Leader>dc", function()
-				dap.continue()
-			end)
-			vim.keymap.set("n", "<C-'>", function()
-				dap.step_over()
-			end)
-			vim.keymap.set("n", "<C-;>", function()
-				dap.step_into()
-			end)
-			vim.keymap.set("n", "<C-:>", function()
-				dap.step_out()
-			end)
-		end,
-	},
-	{
-		"mfussenegger/nvim-dap-python",
-		dependencies = {
-			"mfussenegger/nvim-dap",
-		},
-		config = function()
-			local python_dap = require("dap-python")
-			python_dap.setup("~/.virtualenvs/debugpy/bin/python")
-		end,
-	},
-	{
-		"mxsdev/nvim-dap-vscode-js",
-		dependencies = {
-			"mfussenegger/nvim-dap",
-			{
-				"microsoft/vscode-js-debug",
-				version = "1.x",
-				build = "npm i && npm run compile vsDebugServerBundle && mv dist out",
-			},
-		},
-		config = function()
-			require("dap-vscode-js").setup({
-				debugger_path = vim.fn.stdpath("data") .. "/lazy/vscode-js-debug",
-				adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" },
-			})
-			for _, language in ipairs({ "typescript", "javascript", "svelte" }) do
-				require("dap").configurations[language] = {
-					-- attach to a node process that has been started with
-					-- `--inspect` for longrunning tasks or `--inspect-brk` for short tasks
-					-- npm script -> `node --inspect-brk ./node_modules/.bin/vite dev`
-					{
-						-- use nvim-dap-vscode-js's pwa-node debug adapter
-						type = "pwa-node",
-						-- attach to an already running node process with --inspect flag
-						-- default port: 9222
-						request = "attach",
-						-- allows us to pick the process using a picker
-						processId = require("dap.utils").pick_process,
-						-- name of the debug action you have to select for this config
-						name = "Attach debugger to existing `node --inspect` process",
-						-- for compiled languages like TypeScript or Svelte.js
-						sourceMaps = true,
-						-- resolve source maps in nested locations while ignoring node_modules
-						resolveSourceMapLocations = {
-							"${workspaceFolder}/**",
-							"!**/node_modules/**",
-						},
-						-- path to src in vite based projects (and most other projects as well)
-						cwd = "${workspaceFolder}/src",
-						-- we don't want to debug code inside node_modules, so skip it!
-						skipFiles = { "${workspaceFolder}/node_modules/**/*.js" },
-					},
-					{
-						type = "pwa-chrome",
-						name = "Launch Chrome to debug client",
-						request = "launch",
-						url = "http://localhost:5173",
-						sourceMaps = true,
-						protocol = "inspector",
-						port = 9222,
-						webRoot = "${workspaceFolder}/src",
-						-- skip files from vite's hmr
-						skipFiles = { "**/node_modules/**/*", "**/@vite/*", "**/src/client/*", "**/src/*" },
-					},
-					-- only if language is javascript, offer this debug action
-					language == "javascript"
-							and {
-								-- use nvim-dap-vscode-js's pwa-node debug adapter
-								type = "pwa-node",
-								-- launch a new process to attach the debugger to
-								request = "launch",
-								-- name of the debug action you have to select for this config
-								name = "Launch file in new node process",
-								-- launch current file
-								program = "${file}",
-								cwd = "${workspaceFolder}",
-							}
-						or nil,
-				}
-			end
-		end,
-	},
+      dap.adapters.codelldb = {
+        type = "server",
+        host = "127.0.0.1",
+        port = "${port}",
+        executable = {
+          command = codelldb_path,
+          args = { "--liblldb", liblldb_path, "--port", "${port}" },
+        },
+      }
+
+      dap.configurations.zig = {
+        {
+          type = "codelldb",
+          request = "launch",
+          program = function()
+            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+          end,
+          --program = '${fileDirname}/${fileBasenameNoExtension}',
+          cwd = "${workspaceFolder}",
+          terminal = "integrated",
+        },
+      }
+
+      dapui.setup()
+      require("dap-go").setup()
+
+      dap.listeners.before.attach.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.launch.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated.dapui_config = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited.dapui_config = function()
+        dapui.close()
+      end
+
+      vim.keymap.set("n", "<Leader>dt", function()
+        dap.toggle_breakpoint()
+      end)
+      vim.keymap.set("n", "<Leader>dc", function()
+        dap.continue()
+      end)
+      vim.keymap.set("n", "<C-'>", function()
+        dap.step_over()
+      end)
+      vim.keymap.set("n", "<C-;>", function()
+        dap.step_into()
+      end)
+      vim.keymap.set("n", "<C-:>", function()
+        dap.step_out()
+      end)
+    end,
+  },
+  {
+    "mfussenegger/nvim-dap-python",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+    },
+    config = function()
+      local python_dap = require("dap-python")
+      python_dap.setup("~/.virtualenvs/debugpy/bin/python")
+
+      -- Add a new configuration for debugging the dynamically extracted module
+      local dap = require("dap")
+      table.insert(dap.configurations.python, {
+        name = "Launch Module",
+        type = "python",
+        request = "launch",
+        module = function()
+          return vim.fn.input("module: ")
+        end, -- Dynamically set the module from pyproject.toml
+        console = "integratedTerminal",
+      })
+      -- Add configuration for launching a module with arguments (will prompt for args)
+      table.insert(dap.configurations.python, {
+        name = "Launch Module with Arguments",
+        type = "python",
+        request = "launch",
+        module = function()
+          return vim.fn.input("module: ")
+        end, -- Dynamically set the module from pyproject.toml
+        args = function()
+          return vim.split(vim.fn.input("arguments: "), " ")
+        end,
+        console = "integratedTerminal",
+      })
+    end,
+  },
+  {
+    "mxsdev/nvim-dap-vscode-js",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      {
+        "microsoft/vscode-js-debug",
+        version = "1.x",
+        build = "npm i && npm run compile vsDebugServerBundle && mv dist out",
+      },
+    },
+    config = function()
+      require("dap-vscode-js").setup({
+        debugger_path = vim.fn.stdpath("data") .. "/lazy/vscode-js-debug",
+        adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" },
+      })
+      for _, language in ipairs({ "typescript", "javascript", "svelte" }) do
+        require("dap").configurations[language] = {
+          {
+            type = "pwa-node",
+            request = "attach",
+            processId = require("dap.utils").pick_process,
+            name = "Attach debugger to existing `node --inspect` process",
+            sourceMaps = true,
+            resolveSourceMapLocations = {
+              "${workspaceFolder}/**",
+              "!**/node_modules/**",
+            },
+            cwd = "${workspaceFolder}/src",
+            skipFiles = { "${workspaceFolder}/node_modules/**/*.js" },
+          },
+          {
+            type = "pwa-chrome",
+            name = "Launch Chrome to debug client",
+            request = "launch",
+            url = "http://localhost:5173",
+            sourceMaps = true,
+            protocol = "inspector",
+            port = 9222,
+            webRoot = "${workspaceFolder}/src",
+            skipFiles = { "**/node_modules/**/*", "**/@vite/*", "**/src/client/*", "**/src/*" },
+          },
+          language == "javascript" and {
+            type = "pwa-node",
+            request = "launch",
+            name = "Launch file in new node process",
+            program = "${file}",
+            cwd = "${workspaceFolder}",
+          } or nil,
+        }
+      end
+    end,
+  },
 }
