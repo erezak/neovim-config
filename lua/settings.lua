@@ -1,7 +1,3 @@
--- disable default file browser
-vim.g.loaded_netrwPlugin = 1
-vim.g.loaded_netrw = 1
-
 -- set tabs
 vim.cmd("set expandtab")
 vim.cmd("set tabstop=2")
