@@ -1,30 +1,50 @@
-function Dump(o)
-  if type(o) == 'table' then
-    local s = '{ '
-    for k, v in pairs(o) do
-      if type(k) ~= 'number' then k = '"' .. k .. '"' end
-      s = s .. '[' .. k .. '] = ' .. Dump(v) .. ','
-    end
-    return s .. '} '
-  else
-    return tostring(o)
-  end
-end
-
 return {
-  -- Install markdown preview, use npx if available.
-  "OXY2DEV/markview.nvim",
-  ft = { "markdown" },
-  dependencies = {
-    "nvim-treesitter/nvim-treesitter",
-    "nvim-tree/nvim-web-devicons",
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons",
+    },
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {
+      file_types = {
+        "markdown",
+        "Avante",
+      },
+      win_options = {
+        conceallevel = { default = vim.o.conceallevel, rendered = vim.o.conceallevel },
+        concealcursor = { default = vim.o.concealcursor, rendered = "" },
+      },
+      heading = {
+        border = "true",
+      },
+      dash = {
+        icon = "█",
+      },
+      indent = {
+        enabled = true,
+      },
+      checkbox = {
+        enable = false,
+        unchecked = {
+          icon = " ",
+        },
+        checked = {
+          icon = "󰱒",
+          scope_highlight = "@markup.strikethrough",
+        },
+        custom = {
+          todo = {
+            rendered = "◯ ",
+          },
+          important = {
+            raw = "[~]",
+            rendered = "󰓎 ",
+            highlight = "DiagnosticWarn",
+          },
+        },
+      },
+    },
   },
-  config = function()
-    local markview = require("markview");
-    local presets = require("markview.presets").headings;
-
-    markview.setup({
-      headings = presets.slanted,
-    });
-  end,
 }
