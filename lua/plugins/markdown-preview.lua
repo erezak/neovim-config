@@ -17,7 +17,7 @@ return {
         concealcursor = { default = vim.o.concealcursor, rendered = "" },
       },
       heading = {
-        border = "true",
+        enabled = "true",
       },
       dash = {
         icon = "█",
