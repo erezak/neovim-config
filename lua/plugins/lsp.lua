@@ -28,6 +28,20 @@ return {
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			local lspconfig = require("lspconfig")
 
+			lspconfig.gopls.setup({
+				settings = {
+					gopls = {
+						gofumpt = true,
+						usePlaceholders = true,
+						analyses = {
+							unusedparams = true,
+							fieldalignment = true,
+						},
+						staticcheck = true,
+					},
+				},
+			})
+
 			lspconfig.ts_ls.setup({
 				capabilities = capabilities,
 				root_dir = lspconfig.util.root_pattern("tsconfig.json", "package.json", "jsconfig.json", ".git"),
@@ -88,7 +102,7 @@ return {
 								[vim.env.VIMRUNTIME] = true,
 							},
 							type = {
-							  cast_tostring = true,
+								cast_tostring = true,
 							},
 						},
 						-- telemetry = { enable = false }, -- Optional: disable telemetry
