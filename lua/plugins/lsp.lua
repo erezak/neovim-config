@@ -15,7 +15,6 @@ return {
 					"ruff",
 					"ts_ls",
 					"clangd",
-					"gopls",
 					"tailwindcss",
 				},
 			})
@@ -27,20 +26,6 @@ return {
 		config = function()
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			local lspconfig = require("lspconfig")
-
-			lspconfig.gopls.setup({
-				settings = {
-					gopls = {
-						gofumpt = true,
-						usePlaceholders = true,
-						analyses = {
-							unusedparams = true,
-							fieldalignment = true,
-						},
-						staticcheck = true,
-					},
-				},
-			})
 
 			lspconfig.ts_ls.setup({
 				capabilities = capabilities,
