@@ -1,0 +1,20 @@
+--@type vim.lsp.Config
+return {
+  cmd = { "lua-language-server" },
+  filetypes = { "lua" },
+  root_markers = {".git", ".luarc.json", ".luarc.jsonc"},
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { "vim" },
+      },
+      workspace = {
+        library = {
+          [vim.env.VIMRUNTIME] = true,
+        },
+      },
+      telemetry = { enable = false },
+    },
+  },
+}
+

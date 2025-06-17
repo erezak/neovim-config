@@ -109,7 +109,7 @@ return {
     dependencies = {
       "ravitemer/mcphub.nvim",
       "HakonHarnes/img-clip.nvim",
-      "stevearc/dressing.nvim",
+      "folke/snacks.nvim",
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
       "hrsh7th/nvim-cmp",            -- autocompletion for avante commands and mentions
@@ -138,6 +138,16 @@ return {
           model = "phi4:14b",
         },
       },
+      input = {
+        provider = "snacks",
+        provider_opts = {
+          -- Snacks input configuration
+          title = "Avante Input",
+          icon = " ",
+          placeholder = "Enter your API key...",
+        },
+
+      }
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = "make",

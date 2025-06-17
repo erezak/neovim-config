@@ -21,7 +21,7 @@ return {
       "sindrets/diffview.nvim",
 
       -- picker
-      "nvim-telescope/telescope.nvim",
+      "folke/snacks.nvim",
     },
     keys = {
       { "<leader>gs", "<cmd>Neogit<CR>", desc = "Neogit" },
@@ -30,7 +30,7 @@ return {
       { "<leader>gc", "<cmd>Neogit commit<CR>", desc = "Neogit Commit" },
       { "<leader>gp", "<cmd>Neogit pull<CR>", desc = "Neogit Pull" },
       { "<leader>gP", "<cmd>Neogit push<CR>", desc = "Neogit Push" },
-      { "<leader>gB", "<cmd>:Telescope git_branches<CR>", desc="Git Branches" },
+      { "<leader>gB", "<cmd>:lua Snacks.picker.git_branches()<CR>", desc="Git Branches" },
     },
   },
 }

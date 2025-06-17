@@ -13,7 +13,7 @@ I'm only including main plugins here. For a full list of plugins, see the `plugi
 - LSP and LSP installations using [mason](https://github.com/williamboman/mason.nvim), [mason-lspconfig](https://github.com/williamboman/mason-lspconfig.nvim?tab=readme-ov-file), and [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)
 - Autocompletion using [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 - File tree using [neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim)
-- [Telescope](https://github.com/nvim-telescope/telescope.nvim) for fuzzy finding
+- [Snacks picker](https://github.com/nvim-telescope/telescope.nvim) for fuzzy finding
 - Debug support using [nvim-dap](https://github.com/mfussenegger/nvim-dap) and [UI](https://github.com/rcarriga/nvim-dap-ui)
 - Syntax highlighting using [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
 - [lua-line](https://github.com/nvim-lualine/lualine.nvim) for status line
