@@ -24,3 +24,5 @@ vim.opt.relativenumber = true
 vim.opt.termguicolors = true
 
 vim.opt.conceallevel = 2
+
+vim.opt.scrolloff = 40
