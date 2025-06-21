@@ -55,10 +55,8 @@ return {
 			-- refer to `:h file-pattern` for more examples
 			"BufReadPre "
 				.. vim.fn.expand("~")
-				.. "/vaults/personal/*.md",
-			"BufReadPre " .. vim.fn.expand("~") .. "/vaults/work/*.md",
-			"BufNewFile " .. vim.fn.expand("~") .. "/vaults/personal/*.md",
-			"BufNewFile " .. vim.fn.expand("~") .. "/vaults/work/*.md",
+				.. "/vaults/erez/*.md",
+			"BufNewFile " .. vim.fn.expand("~") .. "/vaults/erez/*.md",
 		},
 		dependencies = {
 			-- Required.
@@ -70,12 +68,8 @@ return {
 			require("obsidian").setup({
 				workspaces = {
 					{
-						name = "personal",
-						path = "~/vaults/personal",
-					},
-					{
-						name = "work",
-						path = "~/vaults/work",
+						name = "erez",
+						path = "~/vaults/erez",
 					},
 				},
 				daily_notes = {
