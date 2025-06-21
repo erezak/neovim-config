@@ -37,12 +37,14 @@ return {
     dependencies = {
       "zbirenbaum/copilot.lua",
       "hrsh7th/nvim-cmp", -- required for copilot-cmp to work
-      -- "hrsh7th/cmp-buffer", -- optional, for buffer completion
-      -- "hrsh7th/cmp-path",   -- optional, for path completion
     },
-    config = function()
-      require("copilot_cmp").setup()
-    end,
+    opts = {
+      suggestion = {
+        enabled = true, -- enable copilot suggestions
+        auto_trigger = false, -- automatically trigger suggestions
+        debounce = 240, -- debounce time in milliseconds
+      },
+    },
   },
   -- {
   -- 	"CopilotC-Nvim/CopilotChat.nvim",
