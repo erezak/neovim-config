@@ -27,23 +27,6 @@ return {
       },
       checkbox = {
         enable = false,
-        unchecked = {
-          icon = " ",
-        },
-        checked = {
-          icon = "󰱒",
-          scope_highlight = "@markup.strikethrough",
-        },
-        custom = {
-          todo = {
-            rendered = "◯ ",
-          },
-          important = {
-            raw = "[~]",
-            rendered = "󰓎 ",
-            highlight = "DiagnosticWarn",
-          },
-        },
       },
     },
   },
